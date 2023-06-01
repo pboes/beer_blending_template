@@ -4,11 +4,12 @@ import pyomo.opt as opt
 
 # ## Entities
 
-# There is a set of ingredients, each with a name, alcohol per volume (abv), and production cost (per gallon).
+# There is a set of ingredients, each with a name, alcohol per volume (abv), production cost (per gallon), and flavour.
 
 
 class Ingredient(BaseModel):
     name: str
+    flavour: str
     abv: confloat(ge=0, le=1)
     cost: NonNegativeFloat
 
@@ -31,7 +32,7 @@ class Data(BaseModel):
 
 # ## Goals and Requirements
 
-# The goal of the problem is to decide how much volume of each ingredient to use
+# The goal of the problem is to decide how much volume of each ingredient to use,
 
 
 def add_produced_volume_variable(model: pyomo.ConcreteModel, data: Data) -> None:
@@ -40,7 +41,7 @@ def add_produced_volume_variable(model: pyomo.ConcreteModel, data: Data) -> None
     )
 
 
-# such that the total cost of producing the desired product is minimized,
+# such that the total cost of producing the desired product is minimized, while making sure the resulting brew has the desired volume,
 
 
 def add_objective(model: pyomo.ConcreteModel, data: Data) -> None:
@@ -52,7 +53,7 @@ def add_objective(model: pyomo.ConcreteModel, data: Data) -> None:
     )
 
 
-# while making sure the resulting brew has the desired volume
+# and the desired alcohol per volume,
 
 
 def add_correct_volume_constraint(model: pyomo.ConcreteModel, data: Data) -> None:
@@ -62,7 +63,7 @@ def add_correct_volume_constraint(model: pyomo.ConcreteModel, data: Data) -> Non
     )
 
 
-# and the desired alcohol per volume.
+# and the desired flavour.
 
 
 def add_correct_abv_constraint(model: pyomo.ConcreteModel, data: Data) -> None:
